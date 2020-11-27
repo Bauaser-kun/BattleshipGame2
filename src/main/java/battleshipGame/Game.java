@@ -61,7 +61,7 @@ public class Game extends Application {
 
         Button rotateBtn = new Button("Rotate Ship");
         rotateBtn.setOnAction(event -> {
-            rotateShip();
+            rotateShip(currentPlayerShip);
         });
 
         Button newGameBtn = new Button("Start new game");
@@ -174,6 +174,9 @@ public class Game extends Application {
         while (totalships > 0) {
             int col = random.nextInt(10);
             int row = random.nextInt(10);
+            if (random.nextBoolean()) {
+                currentship.rotate();
+            }
             boolean shipSetProperly = board.placeShip(currentship, col, row);
 
             if (shipSetProperly) {
@@ -188,9 +191,9 @@ public class Game extends Application {
         }
     }
 
-    private void rotateShip() {
+    private void rotateShip(Battleship ship) {
         if(!gameRunning) {
-
+            ship.rotate();
         }
     }
 
