@@ -21,6 +21,7 @@ public class Board extends Parent {
 
     private VBox boardRows = new VBox();
     private boolean enemy = false;
+    private List<Cell> highlighted = new ArrayList<>();
 
     public Board(boolean playerBoard, EventHandler <? super MouseEvent> clickHandler) {
         this.playerBoard = playerBoard;
@@ -36,10 +37,26 @@ public class Board extends Parent {
         getChildren().add(boardRows);
     }
 
+    public Board(boolean playerBoard, EventHandler<? super MouseEvent> clickHandler,
+                 EventHandler<? super MouseEvent> enterHandler, EventHandler<? super  MouseEvent> exitHandler) {
+        this.playerBoard = playerBoard;
+        for (int row = 0; row < rows; row++) {
+            HBox r =  new HBox();
+            for (int column = 0; column < columns; column++) {
+                Cell cell = new Cell(column, row, this);
+                cell.setOnMouseClicked(clickHandler);
+                cell.setOnMouseEntered(enterHandler);
+                cell.setOnMouseExited(exitHandler);
+                r.getChildren().add(cell);
+            }
+            boardRows.getChildren().add(r);
+        }
+        getChildren().add(boardRows);
+    }
+
     public Cell getCell(int col, int row) {
         return (Cell)((HBox)boardRows.getChildren().get(row)).getChildren().get(col);
     }
-
 
     public boolean placeShip(Battleship ship, int columns, int rows) {
         if (canPlaceShip(ship, columns, rows)) {
@@ -148,6 +165,32 @@ public class Board extends Parent {
         return columns >= 0 && columns < 10 && rows >= 0 && rows < 10;
     }
 
+    public void removeHiglightFromCellsToSetShipOn() {
+        for (Cell cell : highlighted) {
+            cell.removeHiglitght(cell);
+        }
+    }
+
+    public void highlitCellsTosetShipOn(Battleship ship, Cell firstCell) {
+        if (ship == null || !canPlaceShip(ship, firstCell.columns, firstCell.rows)) {
+            return;
+        }
+
+        int shipSize = ship.size;
+
+        for (int i = 0; i < shipSize; i ++) {
+            if (ship.vertical) {
+                Cell occupied = getCell(firstCell.columns , firstCell.rows + i);
+                occupied.highlight(occupied);
+                highlighted.add(occupied);
+            } else {
+                Cell occupied = getCell(firstCell.columns + i, firstCell.rows);
+                occupied.highlight(occupied);
+                highlighted.add(occupied);
+            }
+        }
+    }
+
     public class Cell extends Rectangle {
         public int columns;
         public int rows;
@@ -178,6 +221,22 @@ public class Board extends Parent {
                 return true;
             }
         return false;
+        }
+
+        public void removeHiglitght(Cell cell) {
+            if (isEmpty(cell)) {
+                setFill(Color.AQUAMARINE);
+            }
+        }
+
+        private boolean isEmpty(Cell cell) {
+            return cell.ship == null;
+        }
+
+        public void highlight(Cell cell) {
+            if (isEmpty(cell)) {
+                setFill(Color.LIGHTYELLOW);
+            }
         }
     }
 

@@ -19,6 +19,7 @@ import java.util.Random;
 public class Game extends Application {
     Image imageback = new Image("file:src/main/resources/waterBackground.jpg");
     private Label turnCounter;
+    private int turnCount = 0;
     private Board enemyBoard;
     private Board playerBoard;
     private boolean gameRunning = false;
@@ -35,7 +36,7 @@ public class Game extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(createGame());
+        Scene scene = new Scene(createGame(primaryStage));
 
         primaryStage.setTitle("Battleship");
         primaryStage.setScene(scene);
@@ -43,7 +44,7 @@ public class Game extends Application {
         primaryStage.show();
     }
 
-    private Parent createGame() {
+    private Parent createGame(Stage stage) {
         BackgroundSize backgroundSize = new BackgroundSize(100, 100,
                 true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(imageback,
@@ -66,7 +67,7 @@ public class Game extends Application {
 
         Button newGameBtn = new Button("Start new game");
         newGameBtn.setOnAction(event -> {
-            startGame();
+            startNewGame(stage);
         });
 
         Button exitBtn = new Button("Exit game");
@@ -81,10 +82,10 @@ public class Game extends Application {
         pane.setBottom(bottomButtons);
 
         pane.setRight(new Text("checking if this works"));
+
         enemyBoard = new Board(false, enemyBoardClickHandler());
-
-        playerBoard = new Board(true, playerBoardClickHandler());
-
+        playerBoard = new Board(true, playerBoardClickHandler(),
+                playerBoardEnteredHandler(), playerBoardExitedHandler());
 
         VBox gameBoards = new VBox(50, enemyBoard, playerBoard);
         gameBoards.setAlignment(Pos.CENTER);
@@ -92,6 +93,37 @@ public class Game extends Application {
         pane.setCenter(gameBoards);
 
         return pane;
+    }
+
+    public void resetSetting() {
+        playerShips.clear();
+        enemyShips.clear();
+        oneMastShips = 4;
+        twoMastShips = 3;
+        threeMastShips = 2;
+        fourMastShips = 1;
+        turnCount = 0;
+        totalships = oneMastShips + twoMastShips + threeMastShips + fourMastShips;
+        gameRunning = false;
+    }
+
+    private EventHandler<? super MouseEvent> playerBoardExitedHandler() {
+        return event -> {
+          if (gameRunning) {
+              return;
+          }
+          playerBoard.removeHiglightFromCellsToSetShipOn();
+        };
+    }
+
+    private EventHandler<? super MouseEvent> playerBoardEnteredHandler() {
+        return event -> {
+            if (gameRunning) {
+                return;
+            }
+            Board.Cell currentCell = (Board.Cell) event.getSource();
+            playerBoard.highlitCellsTosetShipOn(currentPlayerShip, currentCell);
+        };
     }
 
     private EventHandler<? super MouseEvent> playerBoardClickHandler() {
@@ -136,7 +168,6 @@ public class Game extends Application {
 
             if (enemyTurn && gameRunning)
                 enemyMove();
-
         };
     }
 
@@ -165,6 +196,16 @@ public class Game extends Application {
     private void startGame() {
         gameRunning = true;
         setShipsRandomly(enemyBoard, enemyShips);
+
+    }
+
+    private void startNewGame(Stage stage){
+        resetSetting();
+        Scene scene = new Scene(createGame(stage));
+        stage.setTitle("Battleship");
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.show();
 
     }
 
