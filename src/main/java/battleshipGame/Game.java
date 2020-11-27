@@ -163,8 +163,9 @@ public class Game extends Application {
     }
 
     private void startGame() {
-        setShipsRandomly(enemyBoard, enemyShips);
         gameRunning = true;
+        setShipsRandomly(enemyBoard, enemyShips);
+
     }
 
     private void setShipsRandomly(Board board, LinkedList<Battleship> ships) {

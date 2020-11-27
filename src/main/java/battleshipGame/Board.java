@@ -123,6 +123,10 @@ public class Board extends Parent {
                 new Point2D(columns - 1, rows),
                 new Point2D(columns + 1, rows),
                 new Point2D(columns, rows - 1),
+                new Point2D(columns + 1, rows + 1),
+                new Point2D(columns - 1, rows - 1),
+                new Point2D(columns + 1, rows - 1),
+                new Point2D(columns - 1, rows + 1),
                 new Point2D(columns, rows + 1)
         };
 
