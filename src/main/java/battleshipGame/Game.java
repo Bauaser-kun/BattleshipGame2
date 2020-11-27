@@ -75,8 +75,13 @@ public class Game extends Application {
             exitGame();
         });
 
+        Button randomizeShipBtn = new Button("Place ships randomly");
+        randomizeShipBtn.setOnAction(event -> {
+            setShipsRandomly(playerBoard, playerShips);
+        });
+
         FlowPane bottomButtons = new FlowPane();
-        bottomButtons.getChildren().addAll(newGameBtn, exitBtn, rotateBtn);
+        bottomButtons.getChildren().addAll(newGameBtn, randomizeShipBtn, exitBtn, rotateBtn);
 
         pane.setTop(turnCounter);
         pane.setBottom(bottomButtons);
@@ -211,7 +216,12 @@ public class Game extends Application {
 
     private void setShipsRandomly(Board board, LinkedList<Battleship> ships) {
         totalships = ships.size();
-        Battleship currentship = getNextShip(ships);
+        Battleship currentship;
+        if (ships == playerShips) {
+            currentship = currentPlayerShip;
+        } else {
+            currentship = getNextShip(ships);
+        }
 
         while (totalships > 0) {
             int col = random.nextInt(10);
