@@ -1,6 +1,5 @@
 package battleshipGame;
 
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
@@ -18,7 +17,7 @@ public class Board extends Parent {
     private final int rows = 10;
     private final int columns = 10;
     public boolean playerBoard;
-    public int ships = 10;
+    public int shipcount = 10;
 
     private VBox boardRows = new VBox();
     private boolean enemy = false;
@@ -167,10 +166,10 @@ public class Board extends Parent {
             setFill(Color.BLACK);
 
             if (ship != null) {
-                ship.hit();
+                ship.wasShot();
                 setFill(Color.RED);
-                if (!ship.isAlive()) {
-                    board.ships--;
+                if (!ship.isNotSinked()) {
+                    board.shipcount--;
                 }
                 return true;
             }

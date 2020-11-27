@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
@@ -30,7 +29,7 @@ public class Game extends Application {
     private int twoMastShips = 3;
     private int threeMastShips = 2;
     private int fourMastShips = 1;
-    private int shipsToPlace = oneMastShips + twoMastShips + threeMastShips + fourMastShips;
+    private int totalships = oneMastShips + twoMastShips + threeMastShips + fourMastShips;
     private LinkedList<Battleship> playerShips  = new LinkedList<>();
     private LinkedList<Battleship> enemyShips  = new LinkedList<>();
 
@@ -130,7 +129,7 @@ public class Game extends Application {
 
             enemyTurn = !cell.shoot();
 
-            if(enemyBoard.ships == 0) {
+            if(enemyBoard.shipcount == 0) {
                 System.out.println("You win");
                 gameRunning = false;
             }
@@ -152,7 +151,7 @@ public class Game extends Application {
 
             enemyTurn = cell.shoot();
 
-            if (playerBoard.ships == 0) {
+            if (playerBoard.shipcount == 0) {
                 System.out.println("You Lose");
                 gameRunning = false;
             }
@@ -169,10 +168,10 @@ public class Game extends Application {
     }
 
     private void setShipsRandomly(Board board, LinkedList<Battleship> ships) {
-        shipsToPlace = ships.size();
+        totalships = ships.size();
         Battleship currentship = getNextShip(ships);
 
-        while (shipsToPlace > 0) {
+        while (totalships > 0) {
             int col = random.nextInt(10);
             int row = random.nextInt(10);
             boolean shipSetProperly = board.placeShip(currentship, col, row);

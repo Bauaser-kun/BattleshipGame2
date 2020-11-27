@@ -12,11 +12,11 @@ public class Battleship {
         hitpoints = size;
     }
 
-    public void hit() {
+    public void wasShot() {
         hitpoints--;
     }
 
-    public boolean isAlive() {
+    public boolean isNotSinked() {
         return hitpoints > 0;
     }
 
