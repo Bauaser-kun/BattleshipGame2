@@ -23,8 +23,9 @@ public class Game extends Application {
     private Board enemyBoard;
     private Board playerBoard;
     private boolean gameRunning = false;
-    private boolean enemyTurn = false;
+    private boolean enemyTurn;
     private Random random = new Random();
+    private Battleship currentPlayerShip;
     private int oneMastShips = 4;
     private int twoMastShips = 3;
     private int threeMastShips = 2;
@@ -52,6 +53,7 @@ public class Game extends Application {
         Background background = new Background(backgroundImage);
 
         addShips(playerShips);
+        currentPlayerShip = getNextShip(playerShips);
         addShips(enemyShips);
 
         BorderPane pane = new BorderPane();
@@ -81,7 +83,9 @@ public class Game extends Application {
 
         pane.setRight(new Text("checking if this works"));
         enemyBoard = new Board(false, enemyBoardClickHandler());
+
         playerBoard = new Board(true, playerBoardClickHandler());
+
 
         VBox gameBoards = new VBox(50, enemyBoard, playerBoard);
         gameBoards.setAlignment(Pos.CENTER);
@@ -97,10 +101,15 @@ public class Game extends Application {
               return;
 
             Board.Cell cell = (Board.Cell) event.getSource();
-            if (playerBoard.placeShip(getNextShip(playerShips), cell.columns, cell.rows)) {
-                if (shipsToPlace == 0) {
+
+            boolean shipSetProperly = playerBoard.placeShip(currentPlayerShip, cell.columns, cell.rows);
+
+            if (shipSetProperly) {
+                playerBoard.placeShip(currentPlayerShip, cell.columns, cell.rows);
+                if (playerShips.size() == 0) {
                     startGame();
                 }
+                currentPlayerShip = getNextShip(playerShips);
             }
         };
     }
@@ -123,6 +132,7 @@ public class Game extends Application {
 
             if(enemyBoard.ships == 0) {
                 System.out.println("You win");
+                gameRunning = false;
             }
 
             if (enemyTurn && gameRunning)
@@ -144,6 +154,7 @@ public class Game extends Application {
 
             if (playerBoard.ships == 0) {
                 System.out.println("You Lose");
+                gameRunning = false;
             }
         }
     }
@@ -158,17 +169,25 @@ public class Game extends Application {
     }
 
     private void setShipsRandomly(Board board, LinkedList<Battleship> ships) {
-       shipsToPlace = ships.size();
-        while (shipsToPlace > 0) {
-            int column = random.nextInt(10);
-            int row = random.nextInt(10);
+        shipsToPlace = ships.size();
+        Battleship currentship = getNextShip(ships);
 
-            if (board.placeShip(getNextShip(ships), column, row)) {
-                shipsToPlace--;
+        while (shipsToPlace > 0) {
+            int col = random.nextInt(10);
+            int row = random.nextInt(10);
+            boolean shipSetProperly = board.placeShip(currentship, col, row);
+
+            if (shipSetProperly) {
+                board.placeShip(currentship, col, row);
+                if (ships.size() == 0) {
+                    if (board == playerBoard) {
+                        startGame();
+                    }
+                }
+                currentship = getNextShip(ships);
             }
         }
     }
-
 
     private void rotateShip() {
         if(!gameRunning) {
