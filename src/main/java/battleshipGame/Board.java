@@ -66,27 +66,19 @@ public class Board extends Parent {
                 for (int i = rows; i < rows + length; i++) {
                     Cell cell = getCell(columns, i);
                     cell.ship = ship;
-                    if (!enemy) {
+                    //if (playerBoard) {
                         cell.setFill(Color.GRAY);
                         cell.setStroke(Color.WHITE);
-                    }
-                    if (enemy) {
-                        cell.setFill(Color.GRAY);
-                        cell.setStroke(Color.WHITE);
-                    }
+                    //}
                 }
             } else {
                 for (int i = columns; i < columns + length; i++) {
                     Cell cell = getCell(i, rows);
                     cell.ship = ship;
-                    if (!enemy) {
+                    //if (playerBoard) {
                         cell.setFill(Color.GRAY);
                         cell.setStroke(Color.WHITE);
-                    }
-                    if (enemy) {
-                        cell.setFill(Color.GRAY);
-                        cell.setStroke(Color.WHITE);
-                    }
+                   // }
                 }
             }
             return true;
